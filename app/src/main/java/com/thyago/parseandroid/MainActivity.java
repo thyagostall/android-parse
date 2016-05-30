@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -14,6 +16,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,9 +50,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
+                    ArrayList<String> resultSet = new ArrayList<>(objects.size());
                     for (ParseObject item : objects) {
-                        Log.d(LOG_TAG, "Name: " + item.getString("firstName") + " Last name: " + item.getString("lastName"));
+                        resultSet.add(item.getString("firstName") + " " + item.getString("lastName"));
                     }
+                    ListView listViewNames = (ListView) findViewById(R.id.list_view_names);
+                    listViewNames.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, resultSet));
+                    Log.d(LOG_TAG, "Finished query: " + resultSet);
                 } else {
                     Log.d(LOG_TAG, "Error: " + e.getMessage());
                 }
